@@ -1,38 +1,63 @@
 # python3
 # 201RMC092 Ernsts Strojevs 16.grupa
 
-def build_heap(data_list):
-    n = len(data_list)
-    swap_list = []
-    for i in range(n):
-        while i > 0:
-            parent = (i - 1) // 2
-            if data_list[i] <= data_list[parent]:
+import os
+from typing import List, Tuple
+
+
+def build_heap(data: List[int]) -> List[Tuple[int, int]]:
+    swaps = []
+    n = len(data)
+
+    for i in range(n//2-1, -1, -1):
+        j = i
+        while True:
+            left = 2*j+1
+            right = 2*j+2
+            largest = j
+            
+            if left < n and data[left] > data[largest]:
+                largest = left
+            if right < n and data[right] > data[largest]:
+                largest = right
+                
+            if largest != j:
+                data[j], data[largest] = data[largest], data[j]
+                swaps.append((j, largest))
+                j = largest
+            else:
                 break
-            data_list[i], data_list[parent] = data_list[parent], data_list[i]
-            swap_list.append((parent, i))
-            i = parent
-    return swap_list
+                
+    return swaps
 
-def main():
-    input_type = input()
-    if "I" in input_type or "i" in input_type:
-        num_elements = int(input())
+
+def read_data_from_input() -> Tuple[str, List[int]]:
+    mode = input().strip()
+    if mode == "I":
+        n = int(input())
         data = list(map(int, input().split()))
-    elif "F" in input_type or "f" in input_type:
-        input_file = input()
-        if "a" not in input_file:
-            with open("tests/" + input_file, 'r') as f:
-                num_elements = int(f.readline())
-                data = list(map(int, f.readline().split()))
+    elif mode == "F":
+        file_name = input().strip()
+        file_path = os.path.join("./tests", file_name)
+        with open(file_path, "r") as f:
+            n = int(f.readline().strip())
+            data = list(map(int, f.readline().strip().split()))
+    else:
+        raise ValueError("Invalid mode")
+    return mode, data
 
-    assert len(data) == num_elements
 
-    swaps = build_heap(data)
-
+def print_swaps(swaps: List[Tuple[int, int]]) -> None:
     print(len(swaps))
     for i, j in swaps:
         print(i, j)
+
+
+def main() -> None:
+    mode, data = read_data_from_input()
+    swaps = build_heap(data)
+    print_swaps(swaps)
+
 
 if __name__ == "__main__":
     main()
