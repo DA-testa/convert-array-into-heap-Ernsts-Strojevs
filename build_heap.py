@@ -1,63 +1,63 @@
 # python3
 # 201RMC092 Ernsts Strojevs 16.grupa
 
-import os
-from typing import List, Tuple
+def heap_sort(arr):
+    def heapify(arr, n, i, swaps):
+        largest = i  
+        l = 2 * i + 1     
+        r = 2 * i + 2     
+     
+        if l < n and arr[i] < arr[l]:
+            largest = l
 
+        if r < n and arr[largest] < arr[r]:
+            largest = r
 
-def build_heap(data: List[int]) -> List[Tuple[int, int]]:
+        if largest != i:
+            arr[i], arr[largest] = arr[largest], arr[i]
+            swaps.append((i, largest))
+            heapify(arr, n, largest, swaps)
+
     swaps = []
-    n = len(data)
+    n = len(arr)
 
-    for i in range(n//2-1, -1, -1):
-        j = i
-        while True:
-            left = 2*j+1
-            right = 2*j+2
-            largest = j
-            
-            if left < n and data[left] > data[largest]:
-                largest = left
-            if right < n and data[right] > data[largest]:
-                largest = right
-                
-            if largest != j:
-                data[j], data[largest] = data[largest], data[j]
-                swaps.append((j, largest))
-                j = largest
-            else:
-                break
-                
+    for i in range(n, -1, -1):
+        heapify(arr, n, i, swaps)
+
+    for i in range(n-1, 0, -1):
+        arr[i], arr[0] = arr[0], arr[i]
+        swaps.append((0, i))
+        heapify(arr, i, 0, swaps)
+
     return swaps
 
-
-def read_data_from_input() -> Tuple[str, List[int]]:
-    mode = input().strip()
-    if mode == "I":
+def main():
+    # get input from user or file
+    input_type = input()
+    if input_type == 'I':
         n = int(input())
         data = list(map(int, input().split()))
-    elif mode == "F":
-        file_name = input().strip()
-        file_path = os.path.join("./tests", file_name)
-        with open(file_path, "r") as f:
-            n = int(f.readline().strip())
-            data = list(map(int, f.readline().strip().split()))
+    elif input_type == 'F':
+        file_path = input()
+        with open(file_path, 'r') as f:
+            n = int(f.readline())
+            data = list(map(int, f.readline().split()))
     else:
-        raise ValueError("Invalid mode")
-    return mode, data
+        print("Invalid input type!")
+        return
 
+    # checks if length of data is the same as the said length
+    assert len(data) == n
 
-def print_swaps(swaps: List[Tuple[int, int]]) -> None:
+    # calls function to assess the data and give back all swaps
+    swaps = heap_sort(data)
+
+    # output how many swaps were made
     print(len(swaps))
+
+    # output all swaps
     for i, j in swaps:
         print(i, j)
-
-
-def main() -> None:
-    mode, data = read_data_from_input()
-    swaps = build_heap(data)
-    print_swaps(swaps)
-
 
 if __name__ == "__main__":
     main()
