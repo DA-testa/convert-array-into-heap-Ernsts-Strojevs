@@ -1,6 +1,6 @@
 # python3
 # 201RMC092 Ernsts Strojevs 16. grupa
-
+#
 
 def build_heap(data):
     swaps = []
