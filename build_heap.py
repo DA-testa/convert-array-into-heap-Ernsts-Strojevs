@@ -11,28 +11,28 @@ def build_heap(data):
     return swaps
 
 def min_heapify(data, i, n, swaps):
-    l = 2 * i + 1
-    r = 2 * i + 2
-    min = i
+    left = 2 * i + 1
+    right = 2 * i + 2
+    min_index = i
 
-    if l < n and data[l] < data[min]:
-        min = l
+    if left < n and data[left] < data[min_index]:
+        min_index = left
 
-    if r < n and data[r] < data[min]:
-        min = r
+    if right < n and data[right] < data[min_index]:
+        min_index = right
 
-    if i != min:
-        data[i], data[min] = data[min], data[i]
-        swaps.append((i, min))
-        min_heapify(data, min, n, swaps)
+    if i != min_index:
+        data[i], data[min_index] = data[min_index], data[i]
+        swaps.append((i, min_index))
+        min_heapify(data, min_index, n, swaps)
 
 def main():
-    input = input()
+    input_mode = input()
 
-    if "I" in input or "i" in input:
+    if "I" in input_mode or "i" in input_mode:
         n = int(input())
         data = list(map(int, input().split()))
-    elif "F" in input or "f" in input:
+    elif "F" in input_mode or "f" in input_mode:
         file_path = input()
 
         if "a" not in file_path:
