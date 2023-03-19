@@ -1,56 +1,63 @@
 # python3
 # 201RMC092 Ernsts Strojevs 16.grupa
 
-def heap_sort(data):
-    n = len(data)
+import os
+from typing import List, Tuple
+
+
+def build_heap(data: List[int]) -> List[Tuple[int, int]]:
     swaps = []
-    
-    # heapify the array
-    for i in range(n // 2, -1, -1):
-        sift_down(data, i, n, swaps)
-    
-    # sort the array
-    for i in range(n - 1, 0, -1):
-        data[0], data[i] = data[i], data[0]
-        swaps.append((0, i))
-        sift_down(data, 0, i, swaps)
-    
+    n = len(data)
+
+    for i in range(n//2-1, -1, -1):
+        j = i
+        while True:
+            left = 2*j+1
+            right = 2*j+2
+            largest = j
+            
+            if left < n and data[left] > data[largest]:
+                largest = left
+            if right < n and data[right] > data[largest]:
+                largest = right
+                
+            if largest != j:
+                data[j], data[largest] = data[largest], data[j]
+                swaps.append((j, largest))
+                j = largest
+            else:
+                break
+                
     return swaps
 
-def sift_down(data, i, n, swaps):
-    min_index = i
-    left_child = 2 * i + 1
-    if left_child < n and data[left_child] > data[min_index]:
-        min_index = left_child
-    right_child = 2 * i + 2
-    if right_child < n and data[right_child] > data[min_index]:
-        min_index = right_child
-    if i != min_index:
-        data[i], data[min_index] = data[min_index], data[i]
-        swaps.append((i, min_index))
-        sift_down(data, min_index, n, swaps)
 
-def main():
-    file_or_no = input("Enter I for keyboard input or F for file input: ")
-    if file_or_no.lower() == 'i':
-        n = int(input("Enter the length of the array: "))
-        data = list(map(int, input("Enter space-separated integers: ").split()))
-    elif file_or_no.lower() == 'f':
-        file_name = input("Enter the name of the file: ")
-        with open(file_name, 'r') as f:
-            n = int(f.readline())
-            data = list(map(int, f.readline().split()))
-    
-    # check if data has the expected length
-    assert len(data) == n
-    
-    # sort the array and get swaps
-    swaps = heap_sort(data)
-    
-    # output the number of swaps and each swap
+def read_data_from_input() -> Tuple[str, List[int]]:
+    mode = input().strip()
+    if mode == "I":
+        n = int(input())
+        data = list(map(int, input().split()))
+    elif mode == "F":
+        file_name = input().strip()
+        file_path = os.path.join("./tests", file_name)
+        with open(file_path, "r") as f:
+            n = int(f.readline().strip())
+            data = list(map(int, f.readline().strip().split()))
+    else:
+        raise ValueError("Invalid mode")
+    return mode, data
+
+
+def print_swaps(swaps: List[Tuple[int, int]]) -> None:
     print(len(swaps))
     for i, j in swaps:
         print(i, j)
+
+
+def main() -> None:
+    mode, data = read_data_from_input()
+    swaps = build_heap(data)
+    print_swaps(swaps)
+
 
 if __name__ == "__main__":
     main()
